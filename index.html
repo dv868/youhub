@@ -45,6 +45,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.08));p
 </div>
 </section>
 <section class="summary"><div class="stat"><b id="shownCount">—</b><span>显示渠道</span></div><div class="stat"><b id="totalCount">—</b><span>增量渠道总数</span></div><div class="stat"><b id="modelCount">—</b><span>涉及模型数</span></div><div class="notice" style="margin-left:auto" id="snapshot">读取中…</div><div class="notice" id="rangeNotice"></div></section>
+<div id="autotestBar" style="display:none;align-items:center;gap:14px;background:#eef4ff;border:1px solid #c8dbff;border-radius:13px;padding:11px 16px;margin:0 0 12px;font-size:13px;color:#1749b7"></div>
 <section class="card"><div class="card-head"><div><h3>新渠道列表</h3><div class="hint">点击「复制」拿 cid 回 HUB 绑定 · 价格为渠道主申报</div></div><button class="pub-btn" id="publishBtn" style="display:none" onclick="publishCf()">☁ 发布公网</button>
 <button class="btn" id="checkBtn" style="display:none">🔍 检查更新</button><button class="btn primary" id="updateBtn" style="display:none">🔄 更新全部</button></div><div id="list"></div><div class="empty" id="empty"><b>没有匹配的渠道</b>调整筛选条件试试</div></section>
 <div class="foot">声明：渠道数据来自 HUB 增量巡检日志，价格和状态会变化，只代表记录时点，不代表 HUB 官方。测速为手动单次真实调用，仅供参考；部分渠道因自身策略不接受此类请求（⊘），属渠道主合理选择，不代表渠道质量。本站不托管 API Key。</div>
@@ -165,6 +166,8 @@ async function refreshChannel(cid,btn){
 async function updateAll(endpoint,btnId,label){
   const btn=$(btnId);
   btn.textContent='更新中…';btn.disabled=true;
+  let prevMax=null;
+  try{prevMax=state.data?state.data._meta.cid_max:null}catch(e){}
   try{
     const r=await fetch(endpoint);
     const d=await r.json();
@@ -180,11 +183,64 @@ async function updateAll(endpoint,btnId,label){
     $('snapshot').textContent=`数据更新 ${fmtShort(meta.generated_at)}`;
     $('rangeNotice').textContent=`cid ${meta.cid_min} – ${meta.cid_max} · 增量水位 ${meta.base_cid}`;
     render();
+    if(!READONLY)maybeAutoTest(prevMax,meta.cid_max);
   }catch(e){
     alert('更新失败：'+String(e));
   }finally{
     btn.textContent=label;btn.disabled=false;
   }
+}
+// 更新后自动识别新渠道里的 0x/免费模型，后台测速（服务器执行，刷新页面不中断）
+function maybeAutoTest(prevMax,newMax){
+  try{
+    if(prevMax==null||newMax==null||newMax<=prevMax)return;
+    const news=state.data.channels.filter(c=>c.cid>prevMax);
+    const plan=[];
+    for(const c of news){
+      const cheap=(c.models||[]).filter(m=>{
+        const free=m.flat==null&&m.mult==null;
+        const zeroMult=m.mult!=null&&m.mult<=0.01;
+        return free||zeroMult;
+      }).slice(0,3);
+      for(const m of cheap){
+        if(!speeds[c.cid+':'+m.modelID]&&plan.length<15)plan.push({cid:c.cid,model:m.modelID});
+      }
+    }
+    if(!plan.length)return;
+    if(!confirm(`新渠道发现 ${plan.length} 个免费/超低价(≤0.01x)模型，后台自动测速？\n（服务器执行，刷新页面不会中断，完成后页面自动刷新结果）`))return;
+    startAutotest(plan);
+  }catch(e){}
+}
+async function startAutotest(plan){
+  try{
+    const r=await fetch('/api/autotest',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({plan})});
+    const d=await r.json();
+    if(!r.ok||d.error){alert('测速启动失败：'+(d.error||r.status));return}
+    pollAutotest();
+  }catch(e){alert('测速启动失败：'+e)}
+}
+let _atTimer=null;
+async function pollAutotest(){
+  const bar=$('autotestBar');
+  if(!bar)return;
+  bar.style.display='flex';
+  try{
+    const r=await fetch('/api/autotest_status');
+    const s=await r.json();
+    if(s.running){
+      bar.innerHTML=`<b>⚡ 后台测速中 ${s.done}/${s.total}</b><span>${esc(s.current||'')}</span><span class="spin">…</span>`;
+      _atTimer=setTimeout(pollAutotest,2000);
+    }else if(s.total>0&&s.done>=s.total){
+      const okN=s.total-s.failed;
+      bar.innerHTML=`<b>✅ 测速完成 ${okN}/${s.total} 可用</b><span>${s.failed?esc(s.failed+' 个失败/拒绝'):'全部成功'} · 正在刷新…</span>`;
+      // 重拉测速结果并重渲染
+      try{const sr=await fetch('speed-tests.json?t='+Date.now());if(sr.ok){const arr=await sr.json();arr.forEach(x=>{speeds[x.cid+':'+x.model]=x})}}catch(e){}
+      render();
+      setTimeout(()=>{bar.style.display='none'},6000);
+    }else{
+      bar.style.display='none';
+    }
+  }catch(e){_atTimer=setTimeout(pollAutotest,3000)}
 }
 async function init(){
   try{
