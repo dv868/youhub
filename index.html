@@ -46,7 +46,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.08));p
 </section>
 <section class="summary"><div class="stat"><b id="shownCount">—</b><span>显示渠道</span></div><div class="stat"><b id="totalCount">—</b><span>增量渠道总数</span></div><div class="stat"><b id="modelCount">—</b><span>涉及模型数</span></div><div class="notice" style="margin-left:auto" id="snapshot">读取中…</div><div class="notice" id="rangeNotice"></div></section>
 <section class="card"><div class="card-head"><div><h3>新渠道列表</h3><div class="hint">点击「复制」拿 cid 回 HUB 绑定 · 价格为渠道主申报</div></div><button class="pub-btn" id="publishBtn" style="display:none" onclick="publishCf()">☁ 发布公网</button>
-<button class="btn primary" id="updateBtn" style="display:none">🔄 更新全部</button></div><div id="list"></div><div class="empty" id="empty"><b>没有匹配的渠道</b>调整筛选条件试试</div></section>
+<button class="btn" id="checkBtn" style="display:none">🔍 检查更新</button><button class="btn primary" id="updateBtn" style="display:none">🔄 更新全部</button></div><div id="list"></div><div class="empty" id="empty"><b>没有匹配的渠道</b>调整筛选条件试试</div></section>
 <div class="foot">声明：渠道数据来自 HUB 增量巡检日志，价格和状态会变化，只代表记录时点，不代表 HUB 官方。测速为手动单次真实调用，仅供参考；部分渠道因自身策略不接受此类请求（⊘），属渠道主合理选择，不代表渠道质量。本站不托管 API Key。</div>
 </div>
 <script>
@@ -162,11 +162,11 @@ async function refreshChannel(cid,btn){
     setTimeout(()=>{if(btn.textContent==='失败')btn.textContent='刷新';},1500);
   }
 }
-async function updateAll(){
-  const btn=$('updateBtn');
+async function updateAll(endpoint,btnId,label){
+  const btn=$(btnId);
   btn.textContent='更新中…';btn.disabled=true;
   try{
-    const r=await fetch('/api/update_all');
+    const r=await fetch(endpoint);
     const d=await r.json();
     if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
     state.data=d;
@@ -183,12 +183,12 @@ async function updateAll(){
   }catch(e){
     alert('更新失败：'+String(e));
   }finally{
-    btn.textContent='🔄 更新全部';btn.disabled=false;
+    btn.textContent=label;btn.disabled=false;
   }
 }
 async function init(){
   try{
-    try{const rr=await fetch('/api/readonly');if(rr.ok){const rd=await rr.json();if(rd.readonly===false){READONLY=false;$('updateBtn').style.display='';$('publishBtn').style.display='';}}}catch(e){}
+    try{const rr=await fetch('/api/readonly');if(rr.ok){const rd=await rr.json();if(rd.readonly===false){READONLY=false;$('updateBtn').style.display='';$('checkBtn').style.display='';$('publishBtn').style.display='';}}}catch(e){}
     state.data=await (await fetch('incr-data.json?t='+Date.now())).json();
     try{const sr=await fetch('speed-tests.json?t='+Date.now());if(sr.ok){const arr=await sr.json();arr.forEach(x=>{speeds[x.cid+':'+x.model]=x})}}catch(e){}
     try{const sv=localStorage.getItem('hub_updated');if(sv)Object.assign(updated,JSON.parse(sv))}catch(e){}
@@ -204,7 +204,8 @@ async function init(){
     render();
   }catch(e){$('snapshot').textContent='数据读取失败';$('empty').style.display='block';$('empty').innerHTML='<b>数据读取失败</b>请通过本地 HTTP 服务打开此页面';}
 }
-$('updateBtn').onclick=updateAll;
+$('updateBtn').onclick=()=>updateAll('/api/update_all','updateBtn','🔄 更新全部');
+$('checkBtn').onclick=()=>updateAll('/api/check_update','checkBtn','🔍 检查更新');
 async function publishCf(){
   const btn=$('publishBtn');btn.disabled=true;btn.textContent='☁ 发布中…';
   try{
