@@ -95,3 +95,9 @@ wrangler deploy
 - 本站为个人兴趣项目，与 HUB 官方无关
 - 渠道数据仅供参考，不构成任何投资 / 消费建议
 - 使用渠道产生的任何消费与风险由使用者自行承担
+
+前台截图：
+<img width="2390" height="1829" alt="image" src="https://github.com/user-attachments/assets/8e601704-8672-457f-8bdd-658784cecd7f" />
+
+后台截图：
+<img width="2692" height="1841" alt="image" src="https://github.com/user-attachments/assets/d30a1c1e-a30d-475a-a84d-625c102d1c5e" />
