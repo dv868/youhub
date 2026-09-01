@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""HUB 新渠道观察站（开源只读版）：静态文件 + 社区众包测速。
+"""YOUHUB 开源只读版：静态文件服务。
 
-渠道数据（incr-data.json）由作者的 HUB 增量巡检日志定时自动生成。
-本开源版只提供「只读展示 + 社区测速」；渠道刷新/更新依赖 HUB 管理员凭证，
-属作者私有部署逻辑，未包含在本仓库。
+渠道数据（incr-data.json）和维护者实测结果（speed-tests.json）随静态文件发布。
+本开源版不向访客索取 API Key，不执行 HUB 渠道测速；页面上的 ⚡ 徽章是维护者
+预先写入的实测快照。渠道刷新、区间导入、更新、自动测速、Key 管理等维护功能
+依赖维护者私有服务与凭证，未包含在本仓库。
 
 启动：python3 server.py [端口，默认 8765]
 环境变量：
@@ -11,13 +12,13 @@
   DATA_DIR  静态文件与数据目录（默认本文件所在目录）
 
 接口：
-  GET  /api/readonly              只读状态（恒 true，前端据此隐藏刷新/更新按钮）
-  GET  /api/community_tests       社区众包测速聚合结果
-  POST /api/report_community_test 匿名上报一次测速（不含 key、不含身份）
+  GET  /api/readonly              恒返回只读，前端据此隐藏维护按钮
+  GET  /api/community_tests       兼容保留的旧聚合接口，当前前端未使用
+  POST /api/report_community_test 兼容保留的旧上报接口，当前前端未使用
   其他路径                        静态文件
 
-安全：用户 API key 只存在用户浏览器 localStorage，前端直连 hub.oaifree.com 测速，
-key 绝不经过本服务。本服务只接收匿名结果（model + 速度 + 时间）。
+安全：本服务不接收 HUB API Key，也不连接 HUB 管理端；社区兼容接口只接收
+模型、速度、时间等匿名字段。公网 Cloudflare Worker 只发布 public/ 静态目录。
 """
 from __future__ import annotations
 import datetime as dt
