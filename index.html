@@ -57,6 +57,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 function fmtPrice(p){if(p==null)return'未标价';const v=Number(p);return (v<0.1?v.toFixed(3):v.toFixed(2)).replace(/0+$/,'').replace(/\.$/,'')+'x'}
 function fmtFlat(f){if(f==null)return'';return '$'+Number(f).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')+'/次'}
 function fmtDate(s){if(!s)return'—';const d=new Date(s);if(isNaN(d))return String(s).replace('T',' ').slice(0,16);const t=new Date(d.getTime()+8*3600*1000);return t.toISOString().replace('T',' ').slice(0,16)}function fmtShort(s){if(!s)return'';const d=new Date(s);if(isNaN(d))return String(s).slice(5,16);const t=new Date(d.getTime()+8*3600*1000);return t.toISOString().replace('T',' ').slice(5,16)}
+function fmtAgo(s){if(!s)return'';const d=new Date(s);if(isNaN(d))return s;const diff=Date.now()-d.getTime();const m=Math.floor(diff/60000);if(m<1)return'刚刚';if(m<60)return m+' 分钟前';const h=Math.floor(m/60);if(h<24)return h+' 小时前';const dy=Math.floor(h/24);if(dy<30)return dy+' 天前';const mo=Math.floor(dy/30);if(mo<12)return mo+' 月前';return Math.floor(mo/12)+' 年前'}
 function render(){
   const meta=state.data._meta;
   let rows=state.data.channels.slice();
@@ -66,6 +67,7 @@ function render(){
   if(state.search){const q=state.search.toLowerCase();rows=rows.filter(r=>String(r.name||'').toLowerCase().includes(q)||String(r.cid)===state.search.trim()||String(r.cid).startsWith(state.search.trim()))}
   rows.sort((a,b)=>{
     if(state.sort==='cidAsc')return a.cid-b.cid;
+    if(state.sort==='updatedDesc')return new Date(b.updatedAt||0)-new Date(a.updatedAt||0)||b.cid-a.cid;
     if(state.sort==='multAsc'){const am=Math.min(...(a.models||[]).map(m=>m.mult??Infinity));const bm=Math.min(...(b.models||[]).map(m=>m.mult??Infinity));return am-bm}
     if(state.sort==='scoreDesc')return (b.score??-1)-(a.score??-1)||b.cid-a.cid;
     if(state.sort==='reportFirst')return (b.detectionId?1:0)-(a.detectionId?1:0)||b.cid-a.cid;
@@ -111,7 +113,7 @@ function render(){
       const testBtn=READONLY?'':`<button class="test-btn" data-test="${r.cid}|${esc(m.modelID)}" title="真实调用测速">测</button>`;
       return `<div class="model-item"><div class="model-line"><span class="model-name"${highlight}>${esc(m.modelID)}</span>${spTag||'<span class="speed-slot"></span>'}<span class="model-price ${cls}">${esc(p)}</span>${testBtn}</div></div>`;
     }).join('');
-    return `<div class="row${r.removed||r.disabled?' dead-row':''}"><div class="cid-box"><div class="cid-num">#${r.cid}</div><div class="cid-date">${fmtDate(r.createdAt)}</div>${READONLY?'':`<button class="testall-btn" data-testall="${r.cid}" title="串行实测该渠道全部模型">测全部</button>`}</div><div class="main"><div class="name">${esc(r.name||'未命名')}${r.removed?' <span class="dead-tag">已下架</span>':(r.disabled?' <span class="dead-tag">已禁用</span>':'')}${r.collectedAt?` <span class="upd-name">最近更新:${fmtShort(r.collectedAt)}</span>`:''}</div><div class="meta"><span class="tag type">${esc(r.type||'未知')}</span>${officialTag}${scoreTag}${reportTag}${pcTag}${budgetTag}${verifyTag}${extraTags}</div></div><div class="models">${models||'<span style="color:var(--muted);font-size:13px">无挂载模型</span>'}</div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto">${READONLY?`<button class="copy" data-copy="${r.cid}">复制</button>`:`<div style="display:flex;gap:6px"><button class="copy" data-refresh="${r.cid}">刷新</button><button class="copy" data-copy="${r.cid}">复制</button></div>`}</div></div>`;
+    return `<div class="row${r.removed||r.disabled?' dead-row':''}"><div class="cid-box"><div class="cid-num">#${r.cid}</div><div class="cid-date">${fmtDate(r.createdAt)}</div>${READONLY?'':`<button class="testall-btn" data-testall="${r.cid}" title="串行实测该渠道全部模型">测全部</button>`}</div><div class="main"><div class="name">${esc(r.name||'未命名')}${r.removed?' <span class="dead-tag">已下架</span>':(r.disabled?' <span class="dead-tag">已禁用</span>':'')}${r.updatedAt?` <span class="upd-name" title="HUB 站最后修改时间">🕐 ${fmtAgo(r.updatedAt)}</span>`:''}${r.collectedAt?` <span class="upd-name" title="本站最近采集时间" style="color:var(--muted)">本站 ${fmtShort(r.collectedAt)}</span>`:''}</div><div class="meta"><span class="tag type">${esc(r.type||'未知')}</span>${officialTag}${scoreTag}${reportTag}${pcTag}${budgetTag}${verifyTag}${extraTags}</div></div><div class="models">${models||'<span style="color:var(--muted);font-size:13px">无挂载模型</span>'}</div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto">${READONLY?`<button class="copy" data-copy="${r.cid}">复制</button>`:`<div style="display:flex;gap:6px"><button class="copy" data-refresh="${r.cid}">刷新</button><button class="copy" data-copy="${r.cid}">复制</button></div>`}</div></div>`;
   }).join('');
   const more=rows.length-shown.length;
   let mb=$('moreBtn');
@@ -177,6 +179,7 @@ async function updateAll(endpoint,btnId,label){
     const types=[...new Set(state.data.channels.map(x=>x.type).filter(Boolean))].sort();
     $('modelFilterList').innerHTML=models.map(m=>`<option value="${esc(m)}">`).join('');
     $('typeFilter').innerHTML='<option value="">全部类型</option>'+types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+    $('sortBy').innerHTML='<option value="cid">最新渠道</option><option value="cidAsc">最早渠道</option><option value="updatedDesc">最近有修改</option><option value="multAsc">最低倍率</option><option value="scoreDesc">自检分优先</option><option value="reportFirst">有检测报告</option><option value="officialFirst">官方渠道</option><option value="freeFirst">免费提供</option>';
     const meta=state.data._meta;
     $('totalCount').textContent=meta.channel_count;
     $('modelCount').textContent=meta.model_count;
@@ -253,10 +256,12 @@ async function init(){
     $('modelCount').textContent=meta.model_count;
     $('snapshot').textContent=`数据更新 ${fmtShort(meta.generated_at)}`;
     $('rangeNotice').textContent=`cid ${meta.cid_min} – ${meta.cid_max} · 增量水位 ${meta.base_cid}`;
+    $('sortBy').innerHTML='<option value="cid">最新渠道</option><option value="cidAsc">最早渠道</option><option value="updatedDesc">最近有修改</option><option value="multAsc">最低倍率</option><option value="scoreDesc">自检分优先</option><option value="reportFirst">有检测报告</option><option value="officialFirst">官方渠道</option><option value="freeFirst">免费提供</option>';
     const models=[...new Set(state.data.channels.flatMap(r=>(r.models||[]).map(m=>m.modelID)))].sort();
     const types=[...new Set(state.data.channels.map(r=>r.type).filter(Boolean))].sort();
     $('modelFilterList').innerHTML=models.map(m=>`<option value="${esc(m)}">`).join('');
     $('typeFilter').innerHTML='<option value="">全部类型</option>'+types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+    $('sortBy').value=state.sort;
     render();
   }catch(e){$('snapshot').textContent='数据读取失败';$('empty').style.display='block';$('empty').innerHTML='<b>数据读取失败</b>请通过本地 HTTP 服务打开此页面';}
 }
