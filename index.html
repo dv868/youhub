@@ -280,6 +280,23 @@ async function init(){
     try{const rr=await fetch('/api/readonly');if(rr.ok){const rd=await rr.json();if(rd.readonly===false){READONLY=false;$('updateBtn').style.display='';$('checkBtn').style.display='';$('publishBtn').style.display='';$('rangeImport').style.display='flex';$('rangeBtn').style.display='';}}}catch(e){}
     if(!READONLY){try{const kr=await fetch('/api/key_map');if(kr.ok){const kd=await kr.json();KEY_GROUPS=kd.groups||{}}}catch(e){}}
     state.data=await (await fetch('incr-data.json?t='+Date.now())).json();
+    try{const sr=await fetch('speed-tests.json?t='+Date.now());if(sr.ok){const arr=await sr.json();arr.forEach(x=>{speeds[x.cid+':'+x.model]=x})}}catch(e){}
+    try{const sv=localStorage.getItem('hub_updated');if(sv)Object.assign(updated,JSON.parse(sv))}catch(e){}
+    const meta=state.data._meta;
+    $('totalCount').textContent=meta.channel_count;
+    $('modelCount').textContent=meta.model_count;
+    $('snapshot').textContent=`数据更新 ${fmtShort(meta.generated_at)}`;
+    $('rangeNotice').textContent=`cid ${meta.cid_min} - ${meta.cid_max} · 增量水位 ${meta.base_cid}`;
+    $('cidTo').placeholder='留空=最新';
+    const models=[...new Set(state.data.channels.flatMap(r=>(r.models||[]).map(m=>m.modelID)))].sort();
+    const types=[...new Set(state.data.channels.map(r=>r.type).filter(Boolean))].sort();
+    $('modelFilterList').innerHTML=models.map(m=>`<option value="${m}">`).join('');
+    $('typeFilter').innerHTML='<option value="">全部类型</option>'+types.map(t=>`<option value="${t}">${t}</option>`).join('');
+    render();
+    if(!READONLY){
+      try{
+        const ar=await fetch('/api/autotest_status');
+        const as=await ar.json();
         if(as.running||(as.total>0&&as.done>=as.total))pollAutotest();
       }catch(e){}
     }
