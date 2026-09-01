@@ -84,6 +84,12 @@ wrangler deploy
 - 欢迎提交 Issue / PR：前端 Bug、渠道状态异常、UI 改进均可
 - 数据的准确性以 HUB 官方为准，本站只做整理筛选
 
+
+## 致谢
+
+- 数据来源与渠道生态：[LINUX DO](https://linux.do) 社区及 [HUB](https://hub.linux.do)（AxonHub）的每一位提供商
+- 本项目从 LINUX DO 社区起步，感谢佬友们的内容与启发
+
 ## 免责声明
 
 - 本站为个人兴趣项目，与 HUB 官方无关
