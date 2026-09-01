@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>YOUHUB</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:title" content="YOUHUB — YouHub. Your hub">
+<meta property="og:description" content="小站整理 Hub 站部分渠道方便筛选，数据仅供参考，以 HUB 官方为准。感谢每一位提供商的分享。">
+<meta property="og:image" content="logo.png">
+<style>
+:root{--bg:#f5f7fb;--surface:#fff;--ink:#172231;--muted:#697789;--line:#e2e8f0;--blue:#2563eb;--blue-soft:#eaf1ff;--green:#087443;--green-soft:#e8f7ef;--amber:#946000;--amber-soft:#fff5df;--red:#b42318;--red-soft:#fff0ee;--shadow:0 12px 35px rgba(35,52,75,.07)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:14px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}button,input,select{font:inherit}button{cursor:pointer}.wrap{max-width:1200px;margin:auto;padding:28px 24px 56px}.topbar{display:flex;justify-content:space-between;gap:18px;align-items:flex-start;margin-bottom:6px}.brand{display:flex;gap:13px;align-items:center}.logo-img{height:34px;width:auto;flex:0 0 auto}
+.hub-badge{display:inline-block;padding:1px 13px 3px;border-radius:11px;border:1.5px solid #b36f00;
+background:linear-gradient(180deg,#ffe89a 0%,#ffc93c 35%,#fb9c00 70%,#e07a00 100%);
+color:#18120a;font-weight:900;letter-spacing:-.5px;position:relative;overflow:hidden;
+box-shadow:inset 0 2px 2px rgba(255,255,255,.85),inset 0 -3px 5px rgba(150,70,0,.45),0 2px 5px rgba(0,0,0,.3);
+text-shadow:0 1px 0 rgba(255,255,255,.5)}
+.hub-badge::before{content:"";position:absolute;left:3%;right:3%;top:1px;height:46%;border-radius:9px 9px 14px 14px;
+background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.08));pointer-events:none}.eyebrow{color:var(--blue);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase}.brand h1{font-size:22px;line-height:1.2;margin:2px 0 0;letter-spacing:-.03em}.snapshot{color:var(--muted);font-size:12px;text-align:right;padding-top:4px}.btn{height:42px;padding:0 15px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font-weight:700;white-space:nowrap}.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}.btn-mini{height:30px;padding:0 12px;font-size:12px;border-radius:8px}.hero{background:var(--surface);border:1px solid var(--line);border-radius:22px;padding:8px 28px 26px;box-shadow:var(--shadow);margin-bottom:18px}.hero h2{font-size:25px;line-height:1.2;margin:0 0 8px;letter-spacing:-.04em}.hero p{margin:0;color:var(--muted);max-width:860px;line-height:1.75}.controls{margin-top:22px;display:grid;grid-template-columns:minmax(220px,1.4fr) 180px 160px 150px;gap:12px;align-items:end}.field label{display:block;font-size:12px;color:var(--muted);margin:0 0 6px;font-weight:650}.field input,.field select{height:44px;width:100%;border:1px solid var(--line);border-radius:11px;background:#fff;color:var(--ink);padding:0 13px;outline:none}.field input:focus,.field select:focus{border-color:#8db1ff;box-shadow:0 0 0 3px var(--blue-soft)}.summary{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin:20px 0 12px}.stat{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:11px 15px;min-width:130px}.stat b{display:block;font-size:19px;letter-spacing:-.03em}.stat span{color:var(--muted);font-size:12px}.notice{margin-left:auto;color:var(--muted);font-size:12px}.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}.card-head{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px}.card-head h3{margin:0;font-size:16px}.card-head .hint{color:var(--muted);font-size:12px}.row{display:flex;gap:14px;align-items:flex-start;padding:15px 20px;border-bottom:1px solid #eef1f5}.row:last-child{border-bottom:0}.row:hover{background:#fcfdff}.cid-box{flex:0 0 92px;min-width:92px}.cid-num{font:600 15px ui-monospace,SFMono-Regular,Menlo,monospace;color:#0f4fbd}.cid-date{color:var(--muted);font-size:11px;margin-top:3px}.main{flex:1 1 auto;min-width:0}.name{font-weight:750;font-size:15px;word-break:break-all}.meta{margin-top:5px;display:flex;gap:6px;flex-wrap:wrap;align-items:center}.tag{display:inline-flex;align-items:center;border-radius:999px;padding:3px 8px;font-size:11px;font-weight:700;white-space:nowrap}.tag.type{background:#f0f2f5;color:#697586}.tag.score{background:var(--blue-soft);color:#1749b7}.tag.official{background:#fff1e3;color:#b45309}.tag.report{background:#eef4ff;color:#1d4ed8;text-decoration:none;cursor:pointer}.tag.report:hover{background:#dceafe}.tag.pc-down{background:#e8f7ef;color:#087443}.tag.pc-up{background:#fff0ee;color:#b42318}.tag.budget{background:#f4f0fb;color:#6d28d9}.tag.soft{background:#f1f4f8;color:#5b6b85}
+.meta>.brk{flex-basis:100%;height:0;margin:0;padding:0}.models{flex:0 0 420px;min-width:400px;max-width:440px;display:flex;flex-direction:column;gap:6px}.model-item{display:flex;flex-direction:column;gap:3px;font-size:13px;padding:5px 0;border-bottom:1px dashed #eef1f5}.model-item:last-child{border-bottom:0}.model-line{display:flex;align-items:center;gap:8px;height:26px}.model-name{color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;flex:1 1 auto}.model-price{font-weight:800;color:#0f4fbd;white-space:nowrap;font-variant-numeric:tabular-nums;flex:0 0 46px;text-align:right}.model-price.missing{color:var(--muted);font-weight:650}.model-price.free{color:var(--green);font-weight:800}.copy{flex:0 0 auto;height:34px;padding:0 10px;border:1px solid #cbd6e5;background:#fff;border-radius:8px;color:#31588f;font-size:12px;font-weight:700}.copy.done{background:var(--green-soft);border-color:#a8ddbe;color:var(--green)}.test-btn{border:1px solid #cbd6e5;background:#fff;border-radius:6px;color:#7c5cbf;font-size:11px;font-weight:700;padding:2px 7px;cursor:pointer;margin-left:6px}.test-btn:hover{background:#f4f0fb;border-color:#b9a3e0}
+.testall-btn{margin-top:4px;border:1px solid #cbd6e5;background:#fff;border-radius:6px;color:#31588f;font-size:10px;font-weight:700;padding:2px 6px;cursor:pointer}
+.testall-btn:disabled{opacity:.5;cursor:wait}
+.pub-btn{height:42px;padding:0 15px;border:1px solid var(--green);border-radius:10px;background:#fff;color:var(--green);font-weight:700;white-space:nowrap;cursor:pointer}
+.pub-btn:disabled{opacity:.5;cursor:wait}.speed-info{font-size:11px;margin-left:6px;white-space:nowrap}.speed-info.ok{color:var(--green);font-weight:600}.speed-info.fail{color:var(--red)}.speed-tag{font-size:10px;white-space:nowrap;flex:0 0 136px;text-align:center;border-radius:6px;padding:1px 4px;font-weight:650;color:var(--green);font-variant-numeric:tabular-nums}
+.speed-slot{flex:0 0 136px}
+.speed-tag.muted{background:#f0f2f5;color:var(--muted)}
+.speed-tag.fail{background:#fef0f0;color:#b42318}.upd-name{font-size:11px;color:var(--green);font-weight:600;margin-left:2px}
+.dead-row{opacity:.55}
+.dead-row:hover{background:#fcfdff}
+.dead-tag{font-size:10px;color:#b42318;background:#fef0f0;border-radius:5px;padding:1px 5px;font-weight:700;margin-left:2px}.speed-sub.fail{color:var(--red)}.empty{padding:60px 20px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--ink);margin-bottom:5px}.foot{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.7}
+@media(max-width:760px){.wrap{padding:18px 13px 40px}.topbar{margin-bottom:6px}.snapshot{display:none}.hero{padding:8px 16px 20px;border-radius:17px}.hero h2{font-size:22px}.controls{grid-template-columns:1fr 1fr}.controls .field:first-child{grid-column:1/-1}.summary{gap:7px}.stat{min-width:calc(50% - 5px);padding:9px 11px}.notice{width:100%;margin-left:0}.row{flex-wrap:wrap}.cid-box{flex:0 0 100%}.models{flex:0 0 100%;max-width:none}.brand h1{font-size:19px}.model-line{gap:4px}.speed-tag{flex:0 0 64px;font-size:9px;padding:1px 2px}.speed-slot{flex:0 0 64px}.model-price{flex:0 0 42px;font-size:12px}.model-name{font-size:12px}.row{padding:13px 14px}}@media(max-width:360px){.speed-tag,.speed-slot{flex:0 0 52px}.model-name{font-size:11px}}.test-btn{padding:2px 4px;margin-left:2px}.model-line{height:24px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="topbar"><div class="brand"><img class="logo-img" src="logo.png" alt="YOUHUB"><div><h1>YouHub. Your hub</h1></div></div></header>
+<section class="hero">
+<p>小站整理 Hub 站部分渠道方便筛选，数据仅供参考，以 HUB 官方为准。感谢 Hub 站每一个提供商，有你们的分享，才有小站施展的机会。</p>
+<div class="controls">
+<div class="field"><label for="modelFilter">按模型筛选</label><input id="modelFilter" list="modelFilterList" placeholder="选择或输入模型"><datalist id="modelFilterList"></datalist></div>
+<div class="field"><label for="typeFilter">按类型筛选</label><select id="typeFilter"><option value="">全部类型</option></select></div>
+<div class="field"><label for="sortBy">排序</label><select id="sortBy"><option value="cid">最新渠道</option><option value="cidAsc">最早渠道</option><option value="multAsc">最低倍率</option><option value="scoreDesc">自检分优先</option><option value="reportFirst">有检测报告</option><option value="officialFirst">官方渠道</option><option value="freeFirst">免费提供</option></select></div>
+<div class="field"><label for="search">搜索渠道名</label><input id="search" placeholder="输入关键词"></div>
+</div>
+</section>
+<section class="summary"><div class="stat"><b id="shownCount">—</b><span>显示渠道</span></div><div class="stat"><b id="totalCount">—</b><span>增量渠道总数</span></div><div class="stat"><b id="modelCount">—</b><span>涉及模型数</span></div><div class="notice" style="margin-left:auto" id="snapshot">读取中…</div><div class="notice" id="rangeNotice"></div></section>
+<section class="card"><div class="card-head"><div><h3>新渠道列表</h3><div class="hint">点击「复制」拿 cid 回 HUB 绑定 · 价格为渠道主申报</div></div><button class="pub-btn" id="publishBtn" style="display:none" onclick="publishCf()">☁ 发布公网</button>
+<button class="btn primary" id="updateBtn" style="display:none">🔄 更新全部</button></div><div id="list"></div><div class="empty" id="empty"><b>没有匹配的渠道</b>调整筛选条件试试</div></section>
+<div class="foot">声明：渠道数据来自 HUB 增量巡检日志，价格和状态会变化，只代表记录时点，不代表 HUB 官方。测速为手动单次真实调用，仅供参考；部分渠道因自身策略不接受此类请求（⊘），属渠道主合理选择，不代表渠道质量。本站不托管 API Key。</div>
+</div>
+<script>
+const state={data:null,model:'',type:'',sort:'cid',search:'',page:1,showDead:false};let READONLY=true;const speeds=window.__speeds||{};const updated={};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+function fmtPrice(p){if(p==null)return'未标价';const v=Number(p);return (v<0.1?v.toFixed(3):v.toFixed(2)).replace(/0+$/,'').replace(/\.$/,'')+'x'}
+function fmtFlat(f){if(f==null)return'';return '$'+Number(f).toFixed(4).replace(/0+$/,'').replace(/\.$/,'')+'/次'}
+function fmtDate(s){if(!s)return'—';const d=new Date(s);if(isNaN(d))return String(s).replace('T',' ').slice(0,16);const t=new Date(d.getTime()+8*3600*1000);return t.toISOString().replace('T',' ').slice(0,16)}function fmtShort(s){if(!s)return'';const d=new Date(s);if(isNaN(d))return String(s).slice(5,16);const t=new Date(d.getTime()+8*3600*1000);return t.toISOString().replace('T',' ').slice(5,16)}
+function render(){
+  const meta=state.data._meta;
+  let rows=state.data.channels.slice();
+  if(!state.showDead)rows=rows.filter(r=>!r.removed&&!r.disabled);
+  if(state.model)rows=rows.filter(r=>(r.models||[]).some(m=>m.modelID===state.model));
+  if(state.type)rows=rows.filter(r=>r.type===state.type);
+  if(state.search){const q=state.search.toLowerCase();rows=rows.filter(r=>String(r.name||'').toLowerCase().includes(q))}
+  rows.sort((a,b)=>{
+    if(state.sort==='cidAsc')return a.cid-b.cid;
+    if(state.sort==='multAsc'){const am=Math.min(...(a.models||[]).map(m=>m.mult??Infinity));const bm=Math.min(...(b.models||[]).map(m=>m.mult??Infinity));return am-bm}
+    if(state.sort==='scoreDesc')return (b.score??-1)-(a.score??-1)||b.cid-a.cid;
+    if(state.sort==='reportFirst')return (b.detectionId?1:0)-(a.detectionId?1:0)||b.cid-a.cid;
+    if(state.sort==='officialFirst')return (b.official?1:0)-(a.official?1:0)||b.cid-a.cid;
+    if(state.sort==='freeFirst'){const f=r=>(r.models||[]).some(m=>m.mult==null&&m.flat==null);return (f(b)?1:0)-(f(a)?1:0)||b.cid-a.cid}
+    return b.cid-a.cid;
+  });
+  $('shownCount').textContent=rows.length;
+  const PAGE=50;
+  const shown=rows.slice(0,state.page*PAGE);
+  $('list').innerHTML=shown.map(r=>{
+    const scoreTag=r.score!=null&&r.score>=0?`<span class="tag score">${r.verdict==='passed'?'🟢':''}已自检 ${Math.round(r.score)}</span>`:'';
+    const reportTag=r.detectionId?`<a class="tag report" href="https://hub.linux.do/project/detections/${r.detectionId}" target="_blank" rel="noopener">检测报告↗</a>`:'';
+    const officialTag=r.official?'<span class="tag official">官方</span>':'';
+    const extraTags=(r.tags||[]).filter(t=>t!=='官方').map(t=>`<span class="tag soft">${esc(t)}</span>`).join('');
+    let pcTag='';
+    if(r.priceChange&&r.priceChange.direction){
+      const d=r.priceChange.direction==='increase';
+      const pcts=(r.priceChange.models||[]).map(x=>x.pct);
+      const maxPct=pcts.length?Math.max(...pcts.map(Math.abs)):0;
+      const pctTxt=maxPct?(d?'+':'-')+Math.round(maxPct)+'%':(d?'涨价':'降价');
+      const tip=(r.priceChange.models||[]).slice(0,6).map(x=>`${x.modelID}: ${x.pct>0?'+':''}${Math.round(x.pct)}%`).join('\n')||'';
+      pcTag=`<span class="brk"></span><span class="tag ${d?'pc-up':'pc-down'}" title="${esc(r.priceChange.changedAt||'')}${tip?'\n'+tip:''}">${d?'↑':'↓'}${pctTxt}</span>`;
+    }
+    let budgetTag='';
+    if(r.budget){
+      const b=r.budget;
+      const pol=b.policy==='hard_limit'?'硬限流':(b.policy==='display_only'?'仅展示':'');
+      const pct=b.total?Math.round((b.used||0)/b.total*100):0;
+      if(b.total){
+        budgetTag=`<span class="brk"></span><span class="tag budget" title="已消耗 $${b.used} / $${b.total}${pol?'\n'+pol:''}">${pol?pol+' · ':''}用$${b.used}/${b.total}${pct>=90?' ⚠':''}</span>`;
+      }
+    }
+    const verifyTag=r.verifyCount?`<span class="tag soft" title="真伪核验人数">${r.verifyCount}人核验</span>`:'';
+    const models=(r.models||[]).map(m=>{
+      const p=m.mult!=null?fmtPrice(m.mult):(m.flat!=null?fmtFlat(m.flat):'免费');
+      const cls=m.mult==null&&m.flat==null?'free':'';
+      const highlight=state.model&&m.modelID===state.model?' style="font-weight:900;color:#1749b7"':'';
+      const sp=speeds[r.cid+':'+m.modelID];
+      const rejected=sp&&!sp.success&&/拒绝|Forbidden|403/.test(sp.error||'');
+      const hhmm=sp?((fmtShort(sp.tested_at)||'').split(' ')[1]||''):'';
+      const spTag=sp?`<span class="speed-tag ${sp.success?'ok':(rejected?'muted':'fail')}" title="${esc((sp.error?sp.error+' · ':'')+'测于 '+fmtShort(sp.tested_at))}">${sp.success?`⚡ ${sp.tps} tok/s ${hhmm}`:(rejected?'⊘':'✗')+' '+hhmm}</span>`:'';
+      const testBtn=READONLY?'':`<button class="test-btn" data-test="${r.cid}|${esc(m.modelID)}" title="真实调用测速">测</button>`;
+      return `<div class="model-item"><div class="model-line"><span class="model-name"${highlight}>${esc(m.modelID)}</span>${spTag||'<span class="speed-slot"></span>'}<span class="model-price ${cls}">${esc(p)}</span>${testBtn}</div></div>`;
+    }).join('');
+    return `<div class="row${r.removed||r.disabled?' dead-row':''}"><div class="cid-box"><div class="cid-num">#${r.cid}</div><div class="cid-date">${fmtDate(r.createdAt)}</div>${READONLY?'':`<button class="testall-btn" data-testall="${r.cid}" title="串行实测该渠道全部模型">测全部</button>`}</div><div class="main"><div class="name">${esc(r.name||'未命名')}${r.removed?' <span class="dead-tag">已下架</span>':(r.disabled?' <span class="dead-tag">已禁用</span>':'')}${r.collectedAt?` <span class="upd-name">最近更新:${fmtShort(r.collectedAt)}</span>`:''}</div><div class="meta"><span class="tag type">${esc(r.type||'未知')}</span>${officialTag}${scoreTag}${reportTag}${pcTag}${budgetTag}${verifyTag}${extraTags}</div></div><div class="models">${models||'<span style="color:var(--muted);font-size:13px">无挂载模型</span>'}</div><div style="display:flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto">${READONLY?`<button class="copy" data-copy="${r.cid}">复制</button>`:`<div style="display:flex;gap:6px"><button class="copy" data-refresh="${r.cid}">刷新</button><button class="copy" data-copy="${r.cid}">复制</button></div>`}</div></div>`;
+  }).join('');
+  const more=rows.length-shown.length;
+  let mb=$('moreBtn');
+  if(!mb){mb=document.createElement('button');mb.id='moreBtn';mb.className='btn';mb.style.cssText='display:block;margin:14px auto;';$('list').after(mb);mb.onclick=()=>{state.page++;render()};}
+  mb.style.display=more>0?'block':'none';
+  mb.textContent=more>0?`加载更多（剩余 ${more} 个）`:'';
+  $('empty').style.display=rows.length?'none':'block';
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{try{await navigator.clipboard.writeText(b.dataset.copy);b.textContent='已复制';b.classList.add('done');setTimeout(()=>{b.textContent='复制';b.classList.remove('done')},1200)}catch{b.textContent=b.dataset.copy}});
+  document.querySelectorAll('[data-refresh]').forEach(b=>b.onclick=()=>refreshChannel(b.dataset.refresh,b));
+  document.querySelectorAll('[data-test]').forEach(b=>b.onclick=()=>testChannel(b.dataset.test,b));
+}
+async function testChannel(pair,btn){
+  const [cid,model]=pair.split('|');
+  btn.disabled=true;
+  const t0=Date.now();
+  const timer=setInterval(()=>{const s=Math.round((Date.now()-t0)/1000);btn.textContent=s+'s';},1000);
+  try{
+    const r=await fetch('/api/test_channel?cid='+cid+'&model='+encodeURIComponent(model));
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
+    speeds[cid+':'+model]=d;
+    render();
+  }catch(e){
+    btn.textContent='✗';
+    setTimeout(()=>{btn.textContent='测';btn.disabled=false;},2500);
+  }finally{
+    clearInterval(timer);
+  }
+}
+async function refreshChannel(cid,btn){
+  btn.textContent='…';btn.disabled=true;
+  try{
+    const r=await fetch('/api/refresh_channel?cid='+cid);
+    const d=await r.json();
+    if(r.status===404){
+      // 渠道已下架，从页面剔除
+      state.data.channels=state.data.channels.filter(c=>String(c.cid)!==String(cid));
+      render();
+      return;
+    }
+    if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
+    const ch=state.data.channels.find(c=>String(c.cid)===String(cid));
+    if(ch)Object.assign(ch,d);
+    updated[cid]=new Date().toISOString();
+    try{localStorage.setItem('hub_updated',JSON.stringify(updated))}catch(e){}
+    render();
+  }catch(e){
+    btn.textContent='失败';btn.disabled=false;
+    setTimeout(()=>{if(btn.textContent==='失败')btn.textContent='刷新';},1500);
+  }
+}
+async function updateAll(){
+  const btn=$('updateBtn');
+  btn.textContent='更新中…';btn.disabled=true;
+  try{
+    const r=await fetch('/api/update_all');
+    const d=await r.json();
+    if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
+    state.data=d;
+    const models=[...new Set(state.data.channels.flatMap(x=>(x.models||[]).map(m=>m.modelID)))].sort();
+    const types=[...new Set(state.data.channels.map(x=>x.type).filter(Boolean))].sort();
+    $('modelFilterList').innerHTML=models.map(m=>`<option value="${esc(m)}">`).join('');
+    $('typeFilter').innerHTML='<option value="">全部类型</option>'+types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+    const meta=state.data._meta;
+    $('totalCount').textContent=meta.channel_count;
+    $('modelCount').textContent=meta.model_count;
+    $('snapshot').textContent=`数据更新 ${fmtShort(meta.generated_at)}`;
+    $('rangeNotice').textContent=`cid ${meta.cid_min} – ${meta.cid_max} · 增量水位 ${meta.base_cid}`;
+    render();
+  }catch(e){
+    alert('更新失败：'+String(e));
+  }finally{
+    btn.textContent='🔄 更新全部';btn.disabled=false;
+  }
+}
+async function init(){
+  try{
+    try{const rr=await fetch('/api/readonly');if(rr.ok){const rd=await rr.json();if(rd.readonly===false){READONLY=false;$('updateBtn').style.display='';$('publishBtn').style.display='';}}}catch(e){}
+    state.data=await (await fetch('incr-data.json?t='+Date.now())).json();
+    try{const sr=await fetch('speed-tests.json?t='+Date.now());if(sr.ok){const arr=await sr.json();arr.forEach(x=>{speeds[x.cid+':'+x.model]=x})}}catch(e){}
+    try{const sv=localStorage.getItem('hub_updated');if(sv)Object.assign(updated,JSON.parse(sv))}catch(e){}
+    const meta=state.data._meta;
+    $('totalCount').textContent=meta.channel_count;
+    $('modelCount').textContent=meta.model_count;
+    $('snapshot').textContent=`数据更新 ${fmtShort(meta.generated_at)}`;
+    $('rangeNotice').textContent=`cid ${meta.cid_min} – ${meta.cid_max} · 增量水位 ${meta.base_cid}`;
+    const models=[...new Set(state.data.channels.flatMap(r=>(r.models||[]).map(m=>m.modelID)))].sort();
+    const types=[...new Set(state.data.channels.map(r=>r.type).filter(Boolean))].sort();
+    $('modelFilterList').innerHTML=models.map(m=>`<option value="${esc(m)}">`).join('');
+    $('typeFilter').innerHTML='<option value="">全部类型</option>'+types.map(t=>`<option value="${esc(t)}">${esc(t)}</option>`).join('');
+    render();
+  }catch(e){$('snapshot').textContent='数据读取失败';$('empty').style.display='block';$('empty').innerHTML='<b>数据读取失败</b>请通过本地 HTTP 服务打开此页面';}
+}
+$('updateBtn').onclick=updateAll;
+async function publishCf(){
+  const btn=$('publishBtn');btn.disabled=true;btn.textContent='☁ 发布中…';
+  try{
+    const r=await fetch('/api/publish');const d=await r.json();
+    if(d.ok){btn.textContent='✓ 已发布';alert('已发布到 '+d.url);}
+    else{btn.textContent='☁ 发布失败';alert('发布失败: '+(d.error||'').slice(0,150));}
+  }catch(e){btn.textContent='☁ 发布失败';alert('发布失败: '+e.message);}
+  setTimeout(()=>{btn.textContent='☁ 发布公网';btn.disabled=false},3000);
+}
+document.addEventListener('click',async e=>{
+  const b=e.target.closest('[data-testall]');if(!b)return;
+  const cid=b.dataset.testall;
+  b.disabled=true;const orig=b.textContent;b.textContent='测试中…';
+  try{
+    const r=await fetch('/api/test_channel_all?cid='+cid);const d=await r.json();
+    if(d.results){
+      b.textContent=`✓ ${d.ok}/${d.total}`;
+      const names=d.results.filter(x=>!x.ok&&x.error).map(x=>x.model+': '+x.error.slice(0,20)).join('\n');
+      alert(`渠道 #${cid} 实测完成：${d.ok}/${d.total} 可用`+(names?'\n\n失败:\n'+names:''));
+      await init();
+    } else { b.textContent='✗ 失败'; alert('测试失败: '+(d.error||'')); }
+  }catch(err){ b.textContent='✗ 失败'; alert('请求失败: '+err.message); }
+  setTimeout(()=>{b.textContent=orig;b.disabled=false},5000);
+});
+$('modelFilter').oninput=e=>{state.model=e.target.value.trim();render()};
+$('typeFilter').onchange=e=>{state.type=e.target.value;render()};
+$('sortBy').onchange=e=>{state.sort=e.target.value;render()};
+$('search').oninput=e=>{state.search=e.target.value.trim();render()};
+init();
+</script>
+</body>
+</html>

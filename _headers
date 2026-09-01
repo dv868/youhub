@@ -1,0 +1,20 @@
+/*
+  X-Content-Type-Options: nosniff
+
+/index.html
+  Cache-Control: no-cache, must-revalidate
+
+/
+  Cache-Control: no-cache, must-revalidate
+
+/incr-data.json
+  Cache-Control: no-cache
+
+/speed-tests.json
+  Cache-Control: no-cache
+
+/logo.png
+  Cache-Control: public, max-age=86400
+
+/favicon.png
+  Cache-Control: public, max-age=86400
