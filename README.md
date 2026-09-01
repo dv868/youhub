@@ -65,6 +65,7 @@ wrangler deploy
 ├── speed-tests.json    # 维护者实测数据快照
 ├── dead_channels.json  # 已下架渠道黑名单
 ├── public/             # Cloudflare Workers 部署目录（静态文件 + _headers）
+├── CHANGELOG.md        # 更新日志
 ├── wrangler.jsonc      # Wrangler 配置
 └── LICENSE             # MIT
 ```
