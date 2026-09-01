@@ -133,9 +133,8 @@ async function testChannel(pair,btn){
   try{
     const r=await fetch('/api/test_channel?cid='+cid+'&model='+encodeURIComponent(model));
     const d=await r.json();
+    if(d&&d.tested_at){speeds[cid+':'+model]=d;render();}  // 成败都立即刷新时间标签（修复失败时残留旧时间）
     if(!r.ok||d.error)throw new Error(d.error||('HTTP '+r.status));
-    speeds[cid+':'+model]=d;
-    render();
   }catch(e){
     btn.textContent='✗';
     setTimeout(()=>{btn.textContent='测';btn.disabled=false;},2500);
