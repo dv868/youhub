@@ -29,7 +29,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.08));p
 .dead-row{opacity:.55}
 .dead-row:hover{background:#fcfdff}
 .dead-tag{font-size:10px;color:#b42318;background:#fef0f0;border-radius:5px;padding:1px 5px;font-weight:700;margin-left:2px}.speed-sub.fail{color:var(--red)}.empty{padding:60px 20px;text-align:center;color:var(--muted)}.empty b{display:block;color:var(--ink);margin-bottom:5px}.foot{color:var(--muted);font-size:12px;margin-top:12px;line-height:1.7}
-@media(max-width:760px){.wrap{padding:18px 13px 40px}.topbar{margin-bottom:6px}.snapshot{display:none}.hero{padding:8px 16px 20px;border-radius:17px}.hero h2{font-size:22px}.controls{grid-template-columns:1fr 1fr}.controls .field:first-child{grid-column:1/-1}.summary{gap:7px}.stat{min-width:calc(50% - 5px);padding:9px 11px}.notice{width:100%;margin-left:0}.row{flex-wrap:wrap}.cid-box{flex:0 0 100%}.models{flex:0 0 100%;max-width:none}.brand h1{font-size:19px}.model-line{gap:4px}.speed-tag{flex:0 0 64px;font-size:9px;padding:1px 2px}.speed-slot{flex:0 0 64px}.model-price{flex:0 0 42px;font-size:12px}.model-name{font-size:12px}.row{padding:13px 14px}}@media(max-width:360px){.speed-tag,.speed-slot{flex:0 0 52px}.model-name{font-size:11px}}.test-btn{padding:2px 4px;margin-left:2px}.model-line{height:24px}}
+@media(max-width:760px){.wrap{padding:18px 13px 40px}.topbar{margin-bottom:6px}.snapshot{display:none}.hero{padding:8px 16px 20px;border-radius:17px}.hero h2{font-size:22px}.controls{grid-template-columns:1fr 1fr}.controls .field:first-child{grid-column:1/-1}.summary{gap:7px}.stat{min-width:calc(50% - 5px);padding:9px 11px}.notice{width:100%;margin-left:0}.row{flex-wrap:wrap}.cid-box{flex:0 0 100%;min-width:0}.main{flex:0 0 100%;}.models{flex:0 0 100%;max-width:none;min-width:0}.row>div:last-child{margin-left:auto}.brand h1{font-size:19px}.model-line{gap:4px;min-width:0}.speed-tag{flex:0 0 64px;font-size:9px;padding:1px 2px}.speed-slot{flex:0 0 64px}.model-price{flex:0 0 42px;font-size:12px}.model-name{font-size:12px}.row{padding:13px 14px}.card-head{flex-wrap:wrap}.card-head>div:first-child{min-width:0;flex:1 1 150px}.card-head .btn,.card-head .pub-btn{flex:0 0 auto}}@media(max-width:360px){.speed-tag,.speed-slot{flex:0 0 52px}.model-name{font-size:11px}}.test-btn{padding:2px 4px;margin-left:2px}.model-line{height:24px}}
 </style>
 </head>
 <body>
@@ -41,7 +41,7 @@ background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.08));p
 <div class="field"><label for="modelFilter">按模型筛选</label><input id="modelFilter" list="modelFilterList" placeholder="选择或输入模型"><datalist id="modelFilterList"></datalist></div>
 <div class="field"><label for="typeFilter">按类型筛选</label><select id="typeFilter"><option value="">全部类型</option></select></div>
 <div class="field"><label for="sortBy">排序</label><select id="sortBy"><option value="cid">最新渠道</option><option value="cidAsc">最早渠道</option><option value="multAsc">最低倍率</option><option value="scoreDesc">自检分优先</option><option value="reportFirst">有检测报告</option><option value="officialFirst">官方渠道</option><option value="freeFirst">免费提供</option></select></div>
-<div class="field"><label for="search">搜索渠道名</label><input id="search" placeholder="输入关键词"></div>
+<div class="field"><label for="search">搜索渠道名 / cid</label><input id="search" placeholder="名称关键词或 cid 数字"></div>
 </div>
 </section>
 <section class="summary"><div class="stat"><b id="shownCount">—</b><span>显示渠道</span></div><div class="stat"><b id="totalCount">—</b><span>增量渠道总数</span></div><div class="stat"><b id="modelCount">—</b><span>涉及模型数</span></div><div class="notice" style="margin-left:auto" id="snapshot">读取中…</div><div class="notice" id="rangeNotice"></div></section>
@@ -62,7 +62,7 @@ function render(){
   if(!state.showDead)rows=rows.filter(r=>!r.removed&&!r.disabled);
   if(state.model)rows=rows.filter(r=>(r.models||[]).some(m=>m.modelID===state.model));
   if(state.type)rows=rows.filter(r=>r.type===state.type);
-  if(state.search){const q=state.search.toLowerCase();rows=rows.filter(r=>String(r.name||'').toLowerCase().includes(q))}
+  if(state.search){const q=state.search.toLowerCase();rows=rows.filter(r=>String(r.name||'').toLowerCase().includes(q)||String(r.cid)===state.search.trim()||String(r.cid).startsWith(state.search.trim()))}
   rows.sort((a,b)=>{
     if(state.sort==='cidAsc')return a.cid-b.cid;
     if(state.sort==='multAsc'){const am=Math.min(...(a.models||[]).map(m=>m.mult??Infinity));const bm=Math.min(...(b.models||[]).map(m=>m.mult??Infinity));return am-bm}
