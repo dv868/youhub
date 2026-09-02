@@ -95,7 +95,7 @@ function render(){
       const maxPct=pcts.length?Math.max(...pcts.map(Math.abs)):0;
       const pctTxt=maxPct?(d?'+':'-')+Math.round(maxPct)+'%':(d?'涨价':'降价');
       const tip=(r.priceChange.models||[]).slice(0,6).map(x=>`${x.modelID}: ${x.pct>0?'+':''}${Math.round(x.pct)}%`).join('\n')||'';
-      pcTag=`<span class="brk"></span><span class="tag ${d?'pc-up':'pc-down'}" title="${esc(r.priceChange.changedAt||'')}${tip?'\n'+tip:''}">${d?'↑':'↓'}${pctTxt}</span>`;
+      pcTag=`<span class="tag ${d?'pc-up':'pc-down'}" title="${esc(r.priceChange.changedAt||'')}${tip?'\n'+tip:''}">${d?'↑':'↓'}${pctTxt}</span>`;
     }
     let budgetTag='';
     if(r.budget){
@@ -103,7 +103,7 @@ function render(){
       const pol=b.policy==='hard_limit'?'硬限流':(b.policy==='display_only'?'仅展示':'');
       const pct=b.total?Math.round((b.used||0)/b.total*100):0;
       if(b.total){
-        budgetTag=`<span class="brk"></span><span class="tag budget" title="已消耗 $${b.used} / $${b.total}${pol?'\n'+pol:''}">${pol?pol+' · ':''}用$${b.used}/${b.total}${pct>=90?' ⚠':''}</span>`;
+        budgetTag=`<span class="tag budget" title="已消耗 $${b.used} / $${b.total}${pol?'\n'+pol:''}">${pol?pol+' · ':''}用$${b.used}/${b.total}${pct>=90?' ⚠':''}</span>`;
       }
     }
     const verifyTag=r.verifyCount?`<span class="tag soft" title="真伪核验人数">${r.verifyCount}人核验</span>`:'';
